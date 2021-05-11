@@ -18,18 +18,25 @@ class StandupRollout
   end
 end
 
-standup_sm_list = [
-  "Ittsel",
-  "Francois",
-  "Quy",
-  "Frederic",
-  "Guillaume",
-  "Ranbir",
-  "Aengus",
-  "Dominique",
-]
+standup_sm_list = ARGV
+scrum_masters_file = "#{__dir__}/scrum_masters.json"
 
-sm_name = standup_sm_list.sample
+begin
+  selected_sm = JSON.parse(File.read(scrum_masters_file))
+rescue Errno::ENOENT
+  selected_sm = []
+end
+
+available_sm = standup_sm_list - selected_sm
+
+if available_sm.empty?
+  available_sm = standup_sm_list
+  selected_sm = []
+end
+
+sm_name = available_sm.sample || "Nobody"
+selected_sm << sm_name
+File.write(scrum_masters_file, JSON.dump(selected_sm))
 
 sr = StandupRollout.new
 msg = "Today's randomly selected standup host is #{sm_name}"
