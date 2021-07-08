@@ -11,9 +11,11 @@ class StandupRollout
 
   def notify(msg)
     # channel = "@U01PB4S6Z3J"
-    channel = "#secret-media-business"
+    # channel = "#secret-media-business"
+    channel = "#secret-gcore"
     # channel = "#slack-integration-tests"
-    full_msg = "<!subteam^S01NS71FSR5|devs-media-biz> #{msg}"
+    # full_msg = "<!subteam^S01NS71FSR5|devs-media-biz> #{msg}"
+    full_msg = "<!subteam^S0281KVFRFS|gcore> #{msg}"
     @notifier.ping full_msg, channel: channel
   end
 end
