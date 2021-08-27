@@ -3,7 +3,6 @@ require 'fileutils'
 
 class StandupRollout
   def initialize
-    # webhook_url = "https://hooks.slack.com/services/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"
     webhook_url = ENV["STANDUPROLLOUT_WEBHOOK_URL"].to_s
     raise "STANDUPROLLOUT_WEBHOOK_URL is undefined" if webhook_url.empty?
     @notifier = Slack::Notifier.new webhook_url do
@@ -13,16 +12,12 @@ class StandupRollout
   end
 
   def notify(msg)
-    # channel = "@U01PB4S6Z3J"
-    # channel = "#secret-media-business"
-    # channel = "#secret-gcore"
-    channel = ENV["STANDUPROLLOUT_CHANNEL"].to_s
+    channel = ENV["STANDUPROLLOUT_CHANNEL"].to_s # example: #slack-integration-tests
     raise "STANDUPROLLOUT_CHANNEL is undefined" if channel.empty?
-    at_handle = ENV["STANDUPROLLOUT_AT_HANDLE"].to_s
+
+    at_handle = ENV["STANDUPROLLOUT_AT_HANDLE"].to_s # example: <!subteam^S01NS71FSR5|my-group>
     raise "STANDUPROLLOUT_AT_HANDLE is undefined" if at_handle.empty?
-    # channel = "#slack-integration-tests"
-    # full_msg = "<!subteam^S01NS71FSR5|devs-media-biz> #{msg}"
-    # full_msg = "<!subteam^S0281KVFRFS|gcore> #{msg}"
+
     full_msg = "#{at_handle} #{msg}"
     @notifier.ping full_msg, channel: channel
   end
