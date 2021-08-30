@@ -7,4 +7,4 @@ RUN bundle install
 
 COPY . .
 
-CMD ["ruby", "standup_rollout.rb", "Martin", "Amrou", "Francois", "Ittsel", "Alex", "Guillaume", "Marion"]
+CMD ["ruby", "standup_rollout.rb"]

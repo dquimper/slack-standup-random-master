@@ -23,7 +23,7 @@ class StandupRollout
   end
 end
 
-standup_sm_list = ARGV
+standup_sm_list = ENV["STANDUPROLLOUT_TEAM"].split(/ +/)
 scrum_masters_file = "/tmp/standup_rollout/scrum_masters.json"
 FileUtils.mkdir_p(File.dirname(scrum_masters_file))
 
