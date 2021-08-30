@@ -11,13 +11,19 @@ class StandupRollout
     end
   end
 
+  def channel
+    c = ENV["STANDUPROLLOUT_CHANNEL"].to_s # example: #slack-integration-tests
+    raise "STANDUPROLLOUT_CHANNEL is undefined" if c.empty?
+    c
+  end
+
+  def at_handle
+    h = ENV["STANDUPROLLOUT_AT_HANDLE"].to_s # example: <!subteam^S01NS71FSR5|my-group>
+    raise "STANDUPROLLOUT_AT_HANDLE is undefined" if h.empty?
+    h
+  end
+
   def notify(msg)
-    channel = ENV["STANDUPROLLOUT_CHANNEL"].to_s # example: #slack-integration-tests
-    raise "STANDUPROLLOUT_CHANNEL is undefined" if channel.empty?
-
-    at_handle = ENV["STANDUPROLLOUT_AT_HANDLE"].to_s # example: <!subteam^S01NS71FSR5|my-group>
-    raise "STANDUPROLLOUT_AT_HANDLE is undefined" if at_handle.empty?
-
     full_msg = "#{at_handle} #{msg}"
     @notifier.ping full_msg, channel: channel
   end
