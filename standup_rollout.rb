@@ -29,28 +29,47 @@ class StandupRollout
   end
 end
 
-standup_sm_list = ENV["STANDUPROLLOUT_TEAM"].split(/ +/)
-scrum_masters_file = "/tmp/standup_rollout/scrum_masters.json"
-FileUtils.mkdir_p(File.dirname(scrum_masters_file))
+class StandupSmList
+  def initialize
+    manage_past_scrum_master do |selected_sm|
+      msg = "Today's randomly selected standup host is #{selected_sm}"
+      sr = StandupRollout.new
+      sr.notify(msg)
+      puts msg
+    end
+  end
 
-begin
-  selected_sm = JSON.parse(File.read(scrum_masters_file))
-rescue Errno::ENOENT
-  selected_sm = []
+  def team
+    @_team ||= ENV["STANDUPROLLOUT_TEAM"].split(/ +/)
+    raise "STANDUPROLLOUT_TEAM is undefined" if @_team.empty?
+    @_team
+  end
+
+  def manage_past_scrum_master
+    scrum_masters_file = "/tmp/standup_rollout/scrum_masters.json"
+    FileUtils.mkdir_p(File.dirname(scrum_masters_file))
+
+    begin
+      past_sm = JSON.parse(File.read(scrum_masters_file))
+    rescue Errno::ENOENT
+      past_sm = []
+    end
+
+    available_sm = team - past_sm
+    if available_sm.empty?
+      available_sm = team
+      past_sm = []
+    end
+
+    selected_sm = available_sm.sample || "Nobody"
+
+    past_sm << selected_sm
+    File.write(scrum_masters_file, JSON.dump(past_sm))
+
+    yield(selected_sm)
+  end
 end
 
-available_sm = standup_sm_list - selected_sm
-
-if available_sm.empty?
-  available_sm = standup_sm_list
-  selected_sm = []
+if __FILE__ == $0
+  StandupSmList.new
 end
-
-sm_name = available_sm.sample || "Nobody"
-selected_sm << sm_name
-File.write(scrum_masters_file, JSON.dump(selected_sm))
-
-sr = StandupRollout.new
-msg = "Today's randomly selected standup host is #{sm_name}"
-sr.notify(msg)
-puts msg
