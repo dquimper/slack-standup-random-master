@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "slack-standup-random-master.fullname" . }}
+  labels:
+    {{- include "slack-standup-random-master.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "slack-standup-random-master.selectorLabels" . | nindent 4 }}

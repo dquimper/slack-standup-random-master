@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "slack-standup-random-master.fullname" . }}-test-connection"
+  labels:
+    {{- include "slack-standup-random-master.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "slack-standup-random-master.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
