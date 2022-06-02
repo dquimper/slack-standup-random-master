@@ -32,8 +32,8 @@ end
 class StandupOrder
   def initialize
     msg = "Today's randomly selected standup order is: #{ARGV.shuffle.join(", ")}"
-    # sr = SlackNotifier.new
-    # sr.notify(msg)
+    sr = SlackNotifier.new
+    sr.notify(msg, nil)
     puts msg
   end
 end
